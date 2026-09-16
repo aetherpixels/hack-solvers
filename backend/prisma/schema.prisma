@@ -1,0 +1,84 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  role          String         // "CUSTOMER", "WORKER", "COOPERATIVE_ADMIN"
+  name          String
+  phone         String         @unique
+  email         String?        @unique
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+
+  workerProfile WorkerProfile?
+  bookings      Booking[]      @relation("CustomerBookings")
+  workerJobs    Booking[]      @relation("WorkerBookings")
+  cooperative   Cooperative?   @relation(fields: [cooperativeId], references: [id])
+  cooperativeId String?
+}
+
+model WorkerProfile {
+  id                 String  @id @default(uuid())
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String  @unique
+  skills             String  // Stored as comma separated string
+  experienceYears    Int
+  serviceRadius      Float   // in km
+  lat                Float
+  lng                Float
+  verificationStatus String  @default("PENDING") // "PENDING", "VERIFIED", "REJECTED"
+  certificateUrl     String?
+  avgRating          Float   @default(0)
+  isAvailableNow     Boolean @default(false)
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  customer    User     @relation("CustomerBookings", fields: [customerId], references: [id])
+  customerId  String
+  worker      User     @relation("WorkerBookings", fields: [workerId], references: [id])
+  workerId    String
+  category    String
+  scheduledAt DateTime
+  status      String   @default("REQUESTED") // "REQUESTED", "ACCEPTED", "COMPLETED", "RATED", "DECLINED"
+  isUrgent    Boolean  @default(false)
+  lat         Float
+  lng         Float
+  address     String
+  createdAt   DateTime @default(now())
+
+  payment     Payment?
+  rating      Rating?
+}
+
+model Payment {
+  id                 String  @id @default(uuid())
+  booking            Booking @relation(fields: [bookingId], references: [id])
+  bookingId          String  @unique
+  amount             Float
+  platformFeePercent Float   @default(5.0)
+  welfareFeePercent  Float   @default(2.0)
+  status             String  @default("PENDING") // "PENDING", "COMPLETED", "FAILED"
+  razorpayOrderId    String?
+}
+
+model Rating {
+  id        String  @id @default(uuid())
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  bookingId String  @unique
+  stars     Int
+  comment   String?
+}
+
+model Cooperative {
+  id      String @id @default(uuid())
+  name    String
+  region  String
+  members User[]
+}
