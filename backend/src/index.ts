@@ -10,8 +10,20 @@ import adminRoutes from './routes/admin';
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
+app.use(cors()); // Allow all origins explicitly to avoid CORS issues
 app.use(express.json());
+
+// Add a diagnostic route you can test in the browser
+app.get('/api/health', async (req, res) => {
+  try {
+    const { PrismaClient } = require('@prisma/client');
+    const prisma = new PrismaClient();
+    const count = await prisma.user.count();
+    res.json({ status: 'OK', message: 'Backend is connected to Postgres!', userCount: count });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/workers', workerRoutes);
