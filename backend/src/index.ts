@@ -21,7 +21,20 @@ app.get('/api/health', async (req, res) => {
     const count = await prisma.user.count();
     res.json({ status: 'OK', message: 'Backend is connected to Postgres!', userCount: count });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: e.message, hint: 'The database is empty! Please visit /api/setup to initialize it.' });
+  }
+});
+
+app.get('/api/setup', (req, res) => {
+  try {
+    const { execSync } = require('child_process');
+    console.log('Running DB Push...');
+    execSync('npx prisma db push', { stdio: 'inherit' });
+    console.log('Running DB Seed...');
+    execSync('npx ts-node --transpile-only prisma/seed.ts', { stdio: 'inherit' });
+    res.send('<h1>Database setup complete!</h1><p>You can now go back to your frontend and log in!</p>');
+  } catch (e: any) {
+    res.status(500).send(`<h1>Setup Failed</h1><pre>${e.message}</pre>`);
   }
 });
 
