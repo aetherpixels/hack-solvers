@@ -11,7 +11,7 @@ export default function Signup() {
       const { data } = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, formData);
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.user.role);
-      window.location.href = '/';
+      window.location.href = window.location.pathname;
     } catch (error) {
       alert('Signup failed');
     }

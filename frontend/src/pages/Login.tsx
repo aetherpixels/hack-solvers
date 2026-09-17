@@ -12,7 +12,7 @@ export default function Login() {
       const { data } = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, { phone, password });
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.user.role);
-      window.location.href = '/'; // hard reload to reset App state
+      window.location.href = window.location.pathname; // hard reload to base path
     } catch (error) {
       alert('Login failed');
     }

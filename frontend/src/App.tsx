@@ -11,6 +11,12 @@ function App() {
   const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('role');
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    window.location.href = window.location.pathname;
+  };
+
   const ProtectedRoute = ({ children, role }: { children: JSX.Element, role?: string }) => {
     if (!token) return <Navigate to="/login" />;
     if (role && userRole !== role) return <Navigate to="/login" />;
