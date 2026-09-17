@@ -23,7 +23,7 @@ export default function CustomerDashboard() {
 
   const searchWorkers = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/workers', {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/workers`, {
         params: { category, lat, lng, isUrgent },
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
@@ -35,7 +35,7 @@ export default function CustomerDashboard() {
 
   const loadBookings = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/bookings', {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setBookings(data);
@@ -51,7 +51,7 @@ export default function CustomerDashboard() {
 
   const handleBook = async (workerId: string, workerCategory: string) => {
     try {
-      await axios.post('http://localhost:5000/api/bookings', {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, {
         workerId,
         category: workerCategory,
         scheduledAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // tomorrow
@@ -71,14 +71,14 @@ export default function CustomerDashboard() {
 
   const handlePay = async (bookingId: string) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/payments/create-order', {
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/create-order`, {
         bookingId, amount: 1000 // mock 1000 INR
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
       // Mock successful payment verification
-      await axios.post('http://localhost:5000/api/payments/verify', {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/verify`, {
         bookingId,
         razorpay_payment_id: 'mock_pay_id',
         razorpay_order_id: data.id,
@@ -96,7 +96,7 @@ export default function CustomerDashboard() {
 
   const handleRate = async (bookingId: string) => {
     try {
-      await axios.post('http://localhost:5000/api/payments/rating', {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payments/rating`, {
         bookingId, stars: 5, comment: 'Excellent service'
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }

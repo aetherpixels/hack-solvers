@@ -10,7 +10,7 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { phone, password });
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, { phone, password });
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.user.role);
       window.location.href = '/'; // hard reload to reset App state

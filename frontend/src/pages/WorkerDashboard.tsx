@@ -11,8 +11,8 @@ export default function WorkerDashboard() {
     try {
       const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
       const [resBookings, resProfile] = await Promise.all([
-        axios.get('http://localhost:5000/api/bookings', { headers }),
-        axios.get('http://localhost:5000/api/workers/me', { headers })
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/workers/me`, { headers })
       ]);
       setBookings(resBookings.data);
       setProfile(resProfile.data);
@@ -25,7 +25,7 @@ export default function WorkerDashboard() {
 
   const updateStatus = async (id: string, status: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/bookings/${id}/status`, { status }, {
+      await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings/${id}/status`, { status }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       loadData();
@@ -37,7 +37,7 @@ export default function WorkerDashboard() {
   const toggleAvailability = async () => {
     if (!profile) return;
     try {
-      await axios.put(`http://localhost:5000/api/workers/availability`, 
+      await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/workers/availability`, 
         { isAvailableNow: !profile.isAvailableNow },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

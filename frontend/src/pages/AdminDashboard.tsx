@@ -10,8 +10,8 @@ export default function AdminDashboard() {
     try {
       const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
       const [resStats, resPending] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/dashboard', { headers }),
-        axios.get('http://localhost:5000/api/admin/pending-workers', { headers })
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/dashboard`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/pending-workers`, { headers })
       ]);
       setStats(resStats.data);
       setPending(resPending.data);
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
 
   const handleVerify = async (userId: string, status: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/workers/${userId}/verify`, { status }, {
+      await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/workers/${userId}/verify`, { status }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       loadData();

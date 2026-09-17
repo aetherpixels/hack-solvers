@@ -8,7 +8,7 @@ export default function WelfarePanel() {
   useEffect(() => {
     const loadWelfare = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/admin/welfare', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/welfare`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setData(res.data);
