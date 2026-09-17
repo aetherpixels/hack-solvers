@@ -5,7 +5,6 @@ import axios from 'axios';
 export default function Login() {
   const [phone, setPhone] = useState('9999999999');
   const [password, setPassword] = useState('password123');
-  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -4,7 +4,6 @@ import axios from 'axios';
 
 export default function Signup() {
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', password: '', role: 'CUSTOMER' });
-  const navigate = useNavigate();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
